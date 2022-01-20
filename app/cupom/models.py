@@ -10,14 +10,15 @@ class Cupom(BaseModel):
     
     porcentagem = db.Column(db.Integer)
     data_expiracao = db.Column(db.Date)
+    automovel_selecionado = db.Column(db.String(5))
 
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id')) 
 
-    carrinho_compras = db.relationship("Carrinho_compras", back_populates = "cupom")
 
     def json(self):
         return {
             'id':self.id,
             'porcentagem':self.porcentagem,
-            'data_expiracao':self.data_expiracao
+            'data_expiracao':self.data_expiracao,
+            'automovel_selecionado':self.automovel_selecionado
         }

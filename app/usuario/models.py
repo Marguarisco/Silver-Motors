@@ -16,6 +16,9 @@ class Usuario(BaseModel):
     rua = db.Column(db.String(100))
     cep = db.Column(db.String(8))
     telefone = db.Column(db.String(13))
+    sexo = db.Column(db.String(10))
+    data_nascimento = db.Column(db.String(10))
+
 
     cupom = db.relationship('Cupom')
     carrinho_compras = db.relationship('Carrinho_compras')
@@ -28,5 +31,7 @@ class Usuario(BaseModel):
             'email':self.email,
             'rua':self.rua,
             'cep':self.cep,
-            'telefone':self.telefone
+            'telefone':self.telefone,
+            'sexo':self.sexo,
+            'data_nascimento':self.data_nascimento
         }

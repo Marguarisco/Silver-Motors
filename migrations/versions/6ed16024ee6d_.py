@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: f1137e56cc2e
+Revision ID: 6ed16024ee6d
 Revises: 
-Create Date: 2022-01-19 14:01:38.802141
+Create Date: 2022-01-19 22:17:46.212633
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f1137e56cc2e'
+revision = '6ed16024ee6d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,24 +21,34 @@ def upgrade():
     op.create_table('carro',
     sa.Column('create_time', sa.String(), nullable=True),
     sa.Column('update_time', sa.String(), nullable=True),
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('placa', sa.String(length=10), nullable=True),
     sa.Column('modelo', sa.String(length=50), nullable=True),
     sa.Column('marca', sa.String(length=50), nullable=True),
-    sa.Column('ano', sa.String(length=70), nullable=True),
+    sa.Column('ano', sa.Integer(), nullable=True),
     sa.Column('cor', sa.String(length=100), nullable=True),
+    sa.Column('valor', sa.Float(), nullable=True),
+    sa.Column('ipva', sa.Float(), nullable=True),
+    sa.Column('quilometragem', sa.Float(), nullable=True),
+    sa.Column('disponivel', sa.String(), nullable=True),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('lugares', sa.Integer(), nullable=True),
+    sa.Column('portas', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_carro_placa'), 'carro', ['placa'], unique=True)
     op.create_table('moto',
     sa.Column('create_time', sa.String(), nullable=True),
     sa.Column('update_time', sa.String(), nullable=True),
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('placa', sa.String(length=10), nullable=True),
     sa.Column('modelo', sa.String(length=50), nullable=True),
     sa.Column('marca', sa.String(length=50), nullable=True),
-    sa.Column('ano', sa.String(length=70), nullable=True),
+    sa.Column('ano', sa.Integer(), nullable=True),
     sa.Column('cor', sa.String(length=100), nullable=True),
+    sa.Column('valor', sa.Float(), nullable=True),
+    sa.Column('ipva', sa.Float(), nullable=True),
+    sa.Column('quilometragem', sa.Float(), nullable=True),
+    sa.Column('disponivel', sa.String(), nullable=True),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_moto_placa'), 'moto', ['placa'], unique=True)
@@ -53,31 +63,33 @@ def upgrade():
     sa.Column('rua', sa.String(length=100), nullable=True),
     sa.Column('cep', sa.String(length=8), nullable=True),
     sa.Column('telefone', sa.String(length=13), nullable=True),
+    sa.Column('sexo', sa.String(length=10), nullable=True),
+    sa.Column('data_nascimento', sa.String(length=10), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_usuario_email'), 'usuario', ['email'], unique=True)
+    op.create_table('carrinho_compras',
+    sa.Column('create_time', sa.String(), nullable=True),
+    sa.Column('update_time', sa.String(), nullable=True),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('valor', sa.Float(), nullable=True),
+    sa.Column('parcelamento', sa.Integer(), nullable=True),
+    sa.Column('usuario_id', sa.Integer(), nullable=True),
+    sa.Column('moto_id', sa.Integer(), nullable=True),
+    sa.Column('carro_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['carro_id'], ['carro.id'], ),
+    sa.ForeignKeyConstraint(['moto_id'], ['moto.id'], ),
+    sa.ForeignKeyConstraint(['usuario_id'], ['usuario.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('cupom',
     sa.Column('create_time', sa.String(), nullable=True),
     sa.Column('update_time', sa.String(), nullable=True),
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('porcentagem', sa.Integer(), nullable=True),
     sa.Column('data_expiracao', sa.Date(), nullable=True),
+    sa.Column('automovel_selecionado', sa.String(length=5), nullable=True),
     sa.Column('usuario_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['usuario_id'], ['usuario.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('carrinho_compras',
-    sa.Column('create_time', sa.String(), nullable=True),
-    sa.Column('update_time', sa.String(), nullable=True),
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('valor', sa.Integer(), nullable=True),
-    sa.Column('usuario_id', sa.Integer(), nullable=True),
-    sa.Column('moto_id', sa.Integer(), nullable=True),
-    sa.Column('carro_id', sa.Integer(), nullable=True),
-    sa.Column('cupom_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['carro_id'], ['carro.id'], ),
-    sa.ForeignKeyConstraint(['cupom_id'], ['cupom.id'], ),
-    sa.ForeignKeyConstraint(['moto_id'], ['moto.id'], ),
     sa.ForeignKeyConstraint(['usuario_id'], ['usuario.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -86,8 +98,8 @@ def upgrade():
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_table('carrinho_compras')
     op.drop_table('cupom')
+    op.drop_table('carrinho_compras')
     op.drop_index(op.f('ix_usuario_email'), table_name='usuario')
     op.drop_table('usuario')
     op.drop_index(op.f('ix_moto_placa'), table_name='moto')

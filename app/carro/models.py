@@ -1,17 +1,16 @@
-from app.models import BaseModel, db
+from app.models import db
+from app.automovel.models import Automovel
 from flask import Blueprint
 
 carro_api = Blueprint('carro_api', __name__)
 
-class Carro(BaseModel):
+class Carro(Automovel):
     __tablename__ = 'carro'
 
     id =  db.Column(db.Integer, primary_key=True, autoincrement=True)
-    placa = db.Column(db.String(10), unique=True, index=True)
-    modelo = db.Column(db.String(50))
-    marca = db.Column(db.String(50))
-    ano = db.Column(db.String(70))
-    cor = db.Column(db.String(100))
+    lugares = db.Column(db.Integer)
+    portas = db.Column(db.Integer)
+
 
     carrinho_compras = db.relationship('Carrinho_compras')
 
@@ -22,6 +21,14 @@ class Carro(BaseModel):
             'cpf':self.cpf,
             'marca':self.marca,
             'ano':self.ano,
-            'cor':self.cor
+            'cor':self.cor,
+            'valor':self.valor,
+            'ipva':self.ipva,
+            'quilometragem':self.quilometragem,
+            'lugares':self.lugares,
+            'portas':self.lugares,
+            'disponivel':self.disponivel
+
+
         }
     
